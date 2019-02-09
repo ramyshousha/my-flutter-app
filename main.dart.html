@@ -1,0 +1,134 @@
+<html>
+<head>
+<title>main.dart</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #cc7832;}
+.s4 { color: #cc7832; font-weight: bold;}
+.s5 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+main.dart</font>
+</center></td></tr></table>
+<pre><span class="s0">// Final app - changed the Theme color</span>
+
+<span class="s1">import </span><span class="s2">'package:flutter/material.dart'</span><span class="s3">;</span>
+<span class="s1">import </span><span class="s2">'package:english_words/english_words.dart'</span><span class="s3">;</span>
+
+<span class="s4">void </span><span class="s1">main() =&gt; runApp(</span><span class="s4">new </span><span class="s1">MyApp())</span><span class="s3">;</span>
+
+<span class="s4">class </span><span class="s1">MyApp </span><span class="s4">extends </span><span class="s1">StatelessWidget {</span>
+  @override
+  Widget build(BuildContext context) {
+    <span class="s4">return new </span><span class="s1">MaterialApp(</span>
+      title: <span class="s2">'Startup Name Generator'</span><span class="s3">,</span>
+      <span class="s1">theme: </span><span class="s4">new </span><span class="s1">ThemeData(</span>
+        primaryColor: Colors.white<span class="s3">,</span>
+      <span class="s1">)</span><span class="s3">,</span>
+      <span class="s1">home: </span><span class="s4">new </span><span class="s1">RandomWords()</span><span class="s3">,</span>
+    <span class="s1">)</span><span class="s3">;</span>
+  <span class="s1">}</span>
+}
+
+<span class="s4">class </span><span class="s1">RandomWords </span><span class="s4">extends </span><span class="s1">StatefulWidget {</span>
+  @override
+  RandomWordsState createState() =&gt; <span class="s4">new </span><span class="s1">RandomWordsState()</span><span class="s3">;</span>
+<span class="s1">}</span>
+
+<span class="s4">class </span><span class="s1">RandomWordsState </span><span class="s4">extends </span><span class="s1">State&lt;RandomWords&gt; {</span>
+  <span class="s4">final </span><span class="s1">List&lt;WordPair&gt; _suggestions = &lt;WordPair&gt;[]</span><span class="s3">;</span>
+  <span class="s4">final </span><span class="s1">Set&lt;WordPair&gt; _saved = </span><span class="s4">new </span><span class="s1">Set&lt;WordPair&gt;()</span><span class="s3">;</span>
+  <span class="s4">final </span><span class="s1">TextStyle _biggerFont = </span><span class="s4">const </span><span class="s1">TextStyle(fontSize: </span><span class="s5">18.0</span><span class="s1">)</span><span class="s3">;</span>
+
+  <span class="s1">@override</span>
+  Widget build(BuildContext context) {
+    <span class="s4">return new </span><span class="s1">Scaffold(</span>
+      appBar: <span class="s4">new </span><span class="s1">AppBar(</span>
+        title: <span class="s4">const </span><span class="s1">Text(</span><span class="s2">'Startup Name Generator'</span><span class="s1">)</span><span class="s3">,</span>
+        <span class="s1">actions: &lt;Widget&gt;[</span>
+          <span class="s4">new </span><span class="s1">IconButton(icon: </span><span class="s4">const </span><span class="s1">Icon(Icons.list)</span><span class="s3">, </span><span class="s1">onPressed: _pushSaved)</span><span class="s3">,</span>
+        <span class="s1">]</span><span class="s3">,</span>
+      <span class="s1">)</span><span class="s3">,</span>
+      <span class="s1">body: _buildSuggestions()</span><span class="s3">,</span>
+    <span class="s1">)</span><span class="s3">;</span>
+  <span class="s1">}</span>
+
+  Widget _buildSuggestions() {
+    <span class="s4">return new </span><span class="s1">ListView.builder(</span>
+        padding: <span class="s4">const </span><span class="s1">EdgeInsets.all(</span><span class="s5">16.0</span><span class="s1">)</span><span class="s3">,</span>
+        <span class="s1">itemBuilder: (BuildContext _context</span><span class="s3">, </span><span class="s1">int i) {</span>
+          <span class="s4">if </span><span class="s1">(i.isOdd) {</span>
+            <span class="s4">return const </span><span class="s1">Divider()</span><span class="s3">;</span>
+          <span class="s1">}</span>
+          <span class="s4">final </span><span class="s1">int index = i ~/ </span><span class="s5">2</span><span class="s3">;</span>
+          <span class="s4">if </span><span class="s1">(index &gt;= _suggestions.length) {</span>
+            _suggestions.addAll(generateWordPairs().take(<span class="s5">10</span><span class="s1">))</span><span class="s3">;</span>
+          <span class="s1">}</span>
+          <span class="s4">return </span><span class="s1">_buildRow(_suggestions[index])</span><span class="s3">;</span>
+        <span class="s1">})</span><span class="s3">;</span>
+  <span class="s1">}</span>
+
+  Widget _buildRow(WordPair pair) {
+    <span class="s4">final </span><span class="s1">bool alreadySaved = _saved.contains(pair)</span><span class="s3">;</span>
+
+    <span class="s4">return new </span><span class="s1">ListTile(</span>
+      title: <span class="s4">new </span><span class="s1">Text(</span>
+        pair.asPascalCase<span class="s3">,</span>
+        <span class="s1">style: _biggerFont</span><span class="s3">,</span>
+      <span class="s1">)</span><span class="s3">,</span>
+      <span class="s1">trailing: </span><span class="s4">new </span><span class="s1">Icon(</span>
+        alreadySaved ? Icons.favorite : Icons.favorite_border<span class="s3">,</span>
+        <span class="s1">color: alreadySaved ? Colors.red : </span><span class="s4">null</span><span class="s3">,</span>
+      <span class="s1">)</span><span class="s3">,</span>
+      <span class="s1">onTap: () {</span>
+        setState(() {
+          <span class="s4">if </span><span class="s1">(alreadySaved) {</span>
+            _saved.remove(pair)<span class="s3">;</span>
+          <span class="s1">} </span><span class="s4">else </span><span class="s1">{</span>
+            _saved.add(pair)<span class="s3">;</span>
+          <span class="s1">}</span>
+        })<span class="s3">;</span>
+      <span class="s1">}</span><span class="s3">,</span>
+    <span class="s1">)</span><span class="s3">;</span>
+  <span class="s1">}</span>
+
+  <span class="s4">void </span><span class="s1">_pushSaved() {</span>
+    Navigator.of(context).push(
+      <span class="s4">new </span><span class="s1">MaterialPageRoute&lt;</span><span class="s4">void</span><span class="s1">&gt;(</span>
+        builder: (BuildContext context) {
+          <span class="s4">final </span><span class="s1">Iterable&lt;ListTile&gt; tiles = _saved.map(</span>
+                (WordPair pair) {
+              <span class="s4">return new </span><span class="s1">ListTile(</span>
+                title: <span class="s4">new </span><span class="s1">Text(</span>
+                  pair.asPascalCase<span class="s3">,</span>
+                  <span class="s1">style: _biggerFont</span><span class="s3">,</span>
+                <span class="s1">)</span><span class="s3">,</span>
+              <span class="s1">)</span><span class="s3">;</span>
+            <span class="s1">}</span><span class="s3">,</span>
+          <span class="s1">)</span><span class="s3">;</span>
+          <span class="s4">final </span><span class="s1">List&lt;Widget&gt; divided = ListTile</span>
+              .divideTiles(
+            context: context<span class="s3">,</span>
+            <span class="s1">tiles: tiles</span><span class="s3">,</span>
+          <span class="s1">)</span>
+              .toList()<span class="s3">;</span>
+          <span class="s4">return new </span><span class="s1">Scaffold(</span>
+            appBar: <span class="s4">new </span><span class="s1">AppBar(</span>
+              title: <span class="s4">const </span><span class="s1">Text(</span><span class="s2">'Saved Suggestions'</span><span class="s1">)</span><span class="s3">,</span>
+            <span class="s1">)</span><span class="s3">,</span>
+            <span class="s1">body: </span><span class="s4">new </span><span class="s1">ListView(children: divided)</span><span class="s3">,</span>
+          <span class="s1">)</span><span class="s3">;</span>
+        <span class="s1">}</span><span class="s3">,</span>
+      <span class="s1">)</span><span class="s3">,</span>
+    <span class="s1">)</span><span class="s3">;</span>
+  <span class="s1">}</span>
+}</pre>
+</body>
+</html>
